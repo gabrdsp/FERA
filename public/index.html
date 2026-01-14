@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FERA - Mundo Virtual</title>
+    
+    <!-- Importando a fonte SLACKEY -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Slackey&display=swap" rel="stylesheet">
+    
+    <!-- Importando fonte Roboto para textos de apoio (inputs) -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- RESET E GERAL --- */
+        body {
+            margin: 0; padding: 0;
+            height: 100vh; width: 100vw;
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a1a1a;
+        }
+        
+        #game-container {
+            position: relative;
+            width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            
+            /* Background da Single Page (Tela Inicial + Auth) */
+            background-image: url('assets/fundo-inicial.png');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .hidden { display: none !important; }
+
+        /* Classes Utilitárias de Texto */
+        .font-slackey { font-family: 'Slackey', cursive; }
+        .font-roboto { font-family: 'Roboto', sans-serif; }
+        
+        /* Cores Especificadas */
+        .color-title { color: #333333; }
+        .color-white { color: #FFFFFF; }
+        .color-gray { color: #666666; }
+        .color-orange { color: #FFB957; }
+
+        /* --- TELA INICIAL (HERO) --- */
+        #initial-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 100;
+            display: flex; justify-content: flex-end; align-items: center; 
+        }
+
+        .hero-content {
+            display: flex; flex-direction: column; align-items: center; 
+            margin-right: 15%; margin-top: -5%; text-align: center;
+        }
+
+        h2.welcome-text {
+            font-family: 'Slackey', cursive; font-size: 50px; color: #FFFFFF;
+            margin: 0 0 10px 0; line-height: 1; 
+            text-shadow: 0px 3px 3px rgba(0, 0, 0, 0.3); text-transform: uppercase;
+        }
+
+        h1.game-title {
+            font-family: 'Slackey', cursive; font-size: 80px; color: #FFFFFF;
+            margin: 0 0 20px 0; line-height: 1; 
+            text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); text-transform: uppercase;
+        }
+
+        /* Botão ENTRAR da Tela Inicial */
+        .btn-entrar-hero {
+            font-family: 'Slackey', cursive; font-size: 20px; color: #333333; 
+            background-color: #FFFFFF; 
+            display: flex; justify-content: center; align-items: center;
+            width: 160px; height: 45px; border: none; border-radius: 50px;
+            cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .btn-entrar-hero:hover {
+            transform: scale(1.05);
+            background-color: #FFB957; color: #FFFFFF;
+        }
+
+        /* --- TELA 2: CONTAINER DE AUTENTICAÇÃO (LOGIN/CADASTRO) --- */
+        #auth-screen {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 101;
+            display: flex; justify-content: center; align-items: center;
+            background-color: rgba(0,0,0,0.4); 
+            backdrop-filter: blur(3px);
+        }
+
+        /* Wrapper central para alinhar Imagem + Caixa */
+        .auth-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            
+            /* REDUÇÃO DE TAMANHO GERAL (ZOOM OUT) */
+            transform: scale(0.85); /* Diminui tudo para 85% do tamanho original */
+        }
+
+        /* A Imagem Lateral (Agora na DIREITA) */
+        .auth-illustration {
+            width: 612px;
+            height: 627px;
+            background-image: url('assets/img_cadastro.png');
+            background-size: cover;
+            background-repeat: no-repeat;
+            z-index: 1; /* Fica atrás */
+            
+            /* Ajuste de posição se necessário */
+            margin-left: -80px; /* Puxa para a esquerda para entrar "embaixo" da caixa branca */
+        }
+
+        /* A Caixa Branca do Formulário (Agora na ESQUERDA) */
+        .auth-box-white {
+            width: 572px;
+            height: 627px;
+            background-color: #FFFFFF;
+            border-radius: 24px; 
+            z-index: 2; /* Fica na frente */
+            
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; /* Centraliza horizontalmente o conteúdo interno */
+            text-align: center;  /* Garante texto centralizado */
+            
+            padding: 50px 60px; 
+            box-sizing: border-box;
+        }
+
+        /* Títulos */
+        .auth-title {
+            font-size: 32px;
+            margin: 0 0 10px 0;
+            text-align: center;
+        }
+
+        /* Subtítulo / Links */
+        .auth-subtitle {
+            font-size: 14px;
+            color: #666666;
+            margin: 0 0 30px 0;
+            font-weight: 500;
+            text-align: center;
+        }
+        .link-orange {
+            color: #FFB957;
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Inputs */
+        .input-group {
+            width: 100%; /* Ocupa a largura disponível do form */
+            margin-bottom: 20px;
+            position: relative;
+            text-align: left; /* Label e input alinhados à esquerda para leitura correta */
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            height: 50px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(102, 102, 102, 0.35);
+            padding: 0 15px;
+            font-size: 16px;
+            color: #333;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+            font-family: 'Roboto', sans-serif;
+        }
+        .form-input:focus {
+            border-color: #FFB957;
+        }
+
+        /* Botão Hide */
+        .btn-hide {
+            position: absolute;
+            right: 15px;
+            top: 42px; 
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            color: rgba(102, 102, 102, 0.8);
+            display: flex; align-items: center; gap: 5px;
+        }
+
+        /* Botão de Ação Laranja */
+        .btn-submit {
+            width: 100%;
+            height: 55px;
+            background-color: #FFB957;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 10px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(255, 185, 87, 0.4);
+        }
+        .btn-submit:hover {
+            background-color: #ffaa33;
+            transform: scale(1.02);
+        }
+
+        /* Conteúdos (Login/Register) para ocupar 100% da caixa */
+        #login-view, #register-view {
+            width: 100%;
+        }
+
+        /* Chat do Jogo */
+        #chat-form { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 60%; display: none; z-index: 50; }
+        #chat-input { width: 100%; padding: 10px; border-radius: 20px; border: 2px solid #000; background: rgba(255, 255, 255, 0.9); text-align: center; outline: none; }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        
+        <!-- === TELA INICIAL === -->
+        <div id="initial-screen">
+            <div class="hero-content">
+                <h2 class="welcome-text">BEM-VINDO AO</h2>
+                <h1 class="game-title">FERA</h1>
+                <button class="btn-entrar-hero" onclick="goToAuth()">ENTRAR</button>
+            </div>
+        </div>
+
+        <!-- === TELA DE LOGIN / CADASTRO === -->
+        <div id="auth-screen" class="hidden">
+            <div class="auth-wrapper">
+                
+                <!-- Caixa Branca (AGORA NA ESQUERDA) -->
+                <div class="auth-box-white">
+                    
+                    <!-- CONTEÚDO LOGIN -->
+                    <div id="login-view">
+                        <h2 class="auth-title font-slackey color-title">Eae Feroz!</h2>
+                        <p class="auth-subtitle font-roboto">
+                            Ainda não é um jogador? 
+                            <span class="link-orange" onclick="switchView('register')">Cadastre-se!</span>
+                        </p>
+
+                        <!-- Input Email/Usuario -->
+                        <div class="input-group">
+                            <label class="form-label font-roboto">Digite seu e-mail :</label>
+                            <input type="text" id="login-user" class="form-input" placeholder="seu@email.com">
+                        </div>
+
+                        <!-- Input Senha -->
+                        <div class="input-group">
+                            <label class="form-label font-roboto">Senha</label>
+                            <input type="password" class="form-input" placeholder="********">
+                            <div class="btn-hide font-roboto">
+                                <span>&#128065;</span> Hide
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 12px; color: #999; margin-top: -10px; margin-bottom: 20px; text-align: left;">Use 4 ou mais caracteres</p>
+
+                        <button class="btn-submit font-slackey" onclick="doLogin()">Entrar</button>
+                    </div>
+
+                    <!-- CONTEÚDO CADASTRO -->
+                    <div id="register-view" class="hidden">
+                        <h2 class="auth-title font-slackey color-title">Crie sua conta</h2>
+                        <p class="auth-subtitle font-roboto">
+                            Já tem conta? 
+                            <span class="link-orange" onclick="switchView('login')">Fazer Login</span>
+                        </p>
+
+                        <div class="input-group">
+                            <label class="form-label font-roboto">Crie seu nome de usuário :</label>
+                            <input type="text" id="reg-user" class="form-input">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="form-label font-roboto">Digite seu e-mail :</label>
+                            <input type="email" class="form-input">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="form-label font-roboto">Crie sua senha :</label>
+                            <input type="password" class="form-input">
+                            <div class="btn-hide font-roboto">
+                                <span>&#128065;</span> Hide
+                            </div>
+                        </div>
+
+                        <button class="btn-submit font-slackey" onclick="doRegister()">Criar conta</button>
+                    </div>
+
+                </div>
+
+                <!-- Imagem Ilustrativa (AGORA NA DIREITA) -->
+                <div class="auth-illustration"></div>
+
+            </div>
+        </div>
+
+        <!-- CHAT DO JOGO -->
+        <div id="chat-form">
+            <input type="text" id="chat-input" placeholder="Digite sua mensagem..." autocomplete="off">
+        </div>
+    </div>
+
+    <!-- LÓGICA DE INTERFACE -->
+    <script>
+        // Transição Inicial -> Auth
+        function goToAuth() {
+            document.getElementById('initial-screen').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
+        }
+
+        // Troca entre Login e Cadastro na mesma caixa
+        function switchView(viewName) {
+            const loginView = document.getElementById('login-view');
+            const regView = document.getElementById('register-view');
+
+            if (viewName === 'register') {
+                loginView.classList.add('hidden');
+                regView.classList.remove('hidden');
+            } else {
+                regView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+            }
+        }
+
+        // Ações de Login
+        function doLogin() {
+            const username = document.getElementById('login-user').value;
+            // Para teste, usamos o campo de e-mail como username
+            if(!username) return alert("Por favor, preencha o campo.");
+            
+            startGame(username);
+        }
+
+        function doRegister() {
+            const username = document.getElementById('reg-user').value;
+            if(!username) return alert("Por favor, crie um nome de usuário.");
+            
+            startGame(username);
+        }
+
+        // Função que conecta com o jogo (Phaser)
+        function startGame(username) {
+            // Esconde UI
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('initial-screen').classList.add('hidden');
+            document.getElementById('chat-form').style.display = 'block';
+
+            // Chama a função global definida no game.js
+            if(window.launchGame) {
+                window.launchGame(username);
+            }
+        }
+    </script>
+
+    <!-- DEPENDÊNCIAS DO JOGO -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <script src="js/game.js"></script>
+
+</body>
+</html>
